@@ -1,5 +1,5 @@
 {
-    "name": "IT-Books",
+    "name": "Backend",
     "version": "1.0.0",
     "description": "mern project",
     "main": "index.js",
@@ -10,14 +10,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/akhil2k-lc/bookStoreApp.git"
+        "url": "git+https://github.com/varadwagh327/IT-Books.git.git"
     },
     "author": "Akhil",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/akhil2k-lc/bookStoreApp/issues"
+        "url": "https://github.com/varadwagh327/IT-Books.git/issues"
     },
-    "homepage": "https://github.com/akhil2k-lc/bookStoreApp#readme",
+    "homepage": "https://github.com/varadwagh327/IT-Books.git#readme",
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
