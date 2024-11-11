@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+
+const {execSync} = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+const program = require('commander');
+const invocationPath = process.cwd();
+let dirPath = path.join(invocationPath);
+
+program
+    .version('version 1.0', '-v --version')
+    .option('*--groupProjectName=arg', 'arg: [all,project,]')
+
+program.on('--help', function(){
+    console.log('')
+    console.log('Examples:');
+    console.log('  $ gite branch --groupProjectName=all');
+    console.log('  $ gite status --groupProjectName=projectName');
+    console.log('  $ gite branch --groupProjectName');
+});
+
+program.parse(process.argv);
+
+/**
+ * @author grutty
+ */
+const config = require('../config');
+
+
+function init(){
+    let order = 'git';
+    const argvLen = process.argv.length;
+    
+    if(argvLen > 2) {
+        const optionsHash = {};
+        process.argv.forEach((item, index) => {
+            if (index > 1) {
+                if (!item.startsWith('--')) {
+                    order += ` ${item}`;
+                } else {
+                    const splitRes = item.split('=');
+                    optionsHash[splitRes[0].replace('--','')] = splitRes[1] || 'working';
+                }
+                
+            }
+        })
+        
+        if(order != 'git') {
+            const projects = Object.keys(config);
+            projects.forEach(item => {
+                const {path, development, projects} = config[item];
+                dirPath = path;
+                let working = [];
+                switch(optionsHash[item]) {
+                    case 'all':
+                        working = projects;
+                        break;
+                    case 'working':
+                        working = development
+                        break;
+                    default:
+                        working = [optionsHash[item]];
+                        break;
+                };
+                gite(dirPath, working, order);
+            })
+        }
+    }
+}
+
+init();
+
+/**
+ * Multidirectory operation git
+ * @param {String} dirPath
+ * @param {Array} project
+ * @param {String} order
+ */
+function gite(dirPath, project, order) {
+    fs.readdir(dirPath, function(err, files) {
+        if(err) {
+            console.debug(err);
+            return err;
+        }
+        files.forEach(item => {
+            if(project.includes(item)) {
+                mongoimport(`cd ${path.join(dirPath, item)} && ${order}`);
+            }
+        })
+    })
+}
+
+/**
+ * exec shell
+ * @param {String} order
+ */
+function mongoimport(order){
+    console.log(order);
+    console.log(execSync(order).toString());
+}
